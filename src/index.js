@@ -18,7 +18,16 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
 app.get('/', (req, res) => {
-  res.send(`Hi there! This is a nodejs-line-message running on PORT: ${PORT} `)
+  return res.send(`Hi there! This is a nodejs-line-message running on PORT: ${PORT} `)
+})
+
+app.post('/webhook', (req, res) => {
+  const { replyToken, message } = req.body.events[0]
+
+  console.log(`Message token: ${replyToken}`)
+  console.log(`Message from chat: ${message.text}`)
+
+  return res.json({ status: 200,  message: 'Webhook is working!' })
 })
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`))
