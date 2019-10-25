@@ -7,8 +7,8 @@
 require('dotenv').config()
 
 const app = require('express')()
-const axios = require('axios')
 const bodyParser = require('body-parser')
+const lineMessageReply = require('./services/lineMessageReply')
 
 const { PORT } = process.env
 
@@ -21,13 +21,23 @@ app.get('/', (req, res) => {
   return res.send(`Hi there! This is a nodejs-line-message running on PORT: ${PORT} `)
 })
 
-app.post('/webhook', (req, res) => {
+app.post('/webhook', async (req, res) => {
   const { replyToken, message } = req.body.events[0]
 
   console.log(`Message token: ${replyToken}`)
   console.log(`Message from chat: ${message.text}`)
 
-  return res.json({ status: 200,  message: 'Webhook is working!' })
+  try {
+    const { data: response } = await lineMessageReply(replyToken, message.text)
+
+    console.log(`Reply message result : ${response}`)
+
+    return res.json({ status: 200, message: 'Sent message!' })
+  } catch (err) {
+    console.log(err.response)
+    return res.status(500).send('Some thing went wrong')
+  }
+  
 })
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`))
