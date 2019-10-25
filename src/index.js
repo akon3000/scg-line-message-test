@@ -33,9 +33,12 @@ app.post('/webhook', async (req, res) => {
     console.log(`Reply message result : ${response}`)
 
     return res.json({ status: 200, message: 'Sent message!' })
+    
   } catch (err) {
-    console.log(err.response)
-    return res.status(500).send('Some thing went wrong')
+
+    console.log(`Message error: ${ err.response.data.message}`)
+
+    return res.json({ status: err.response.status, message: err.response.data.message })
   }
   
 })

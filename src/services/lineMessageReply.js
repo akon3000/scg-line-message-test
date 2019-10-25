@@ -11,10 +11,10 @@ const lineMessageReply = (replyToken, message) => axios({ // axios is Promise
   },
   data: {
     replyToken,
-    messages: {
+    messages: [{
       type: 'text',
       text: message
-    }
+    }]
   }
 })
 
