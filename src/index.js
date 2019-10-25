@@ -8,7 +8,7 @@ require('dotenv').config()
 
 const app = require('express')()
 const bodyParser = require('body-parser')
-const firebaseDatabase = require('./services/firebaseDatabase')
+const lineWebhook = require('./middleware/lineWebhook')
 const lineMessageReply = require('./services/lineMessageReply')
 
 const { PORT } = process.env
@@ -18,32 +18,40 @@ const { PORT } = process.env
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
-app.get('/', (req, res) => {
-  return res.send(`Hi there! This is a nodejs-line-message running on PORT: ${PORT} `)
-})
+app.get('/', (req, res) => res.send(`Hi there! This is a nodejs-line-message running on PORT: ${PORT} `))
 
-app.post('/webhook', async (req, res) => {
-  const { replyToken, message } = req.body.events[0]
+/**
+ * @response
+ *  - success https://developers.line.biz/en/reference/messaging-api/#response
+ *  - error https://developers.line.biz/en/reference/messaging-api/#error-responses
+ */
+app.post('/webhook', lineWebhook, async (req, res) => {
+  const { replyToken, messages } = req
 
-  console.log(`Message token: ${replyToken}`) // For log on clound server
-  console.log(`Message from chat: ${message.text}`) // For log on clound server
+  if (messages.length === 0) {
+    return res.json({
+      status: 200,
+      message: 'Webhook already tigger!!'
+    })
+  }
 
   try {
-
-    // respone => https://developers.line.biz/en/reference/messaging-api/#response
-
-    const { data: response } = await lineMessageReply(replyToken, message.text)
-
-    console.log(`Reply message result:`, response) // For log on clound server
-
-    return res.json({ status: 200, message: 'Sent message!' })
+    await lineMessageReply(replyToken, messages)
+    
+    return res.json({
+      status: 200,
+      message: 'Sent message!'
+    })
 
   } catch (err) {
-    // see more if you got error from line => https://developers.line.biz/en/reference/messaging-api/#error-responses
 
     console.log(`Message error: ${err.response.data.message}`) // For log on clound server
 
-    return res.json({ status: err.response.status, message: err.response.data.message })
+    return res.json({
+      status: err.response.status,
+      message: err.response.data.message
+    })
+
   }
   
 })
