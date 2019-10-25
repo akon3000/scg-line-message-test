@@ -3,6 +3,7 @@ const firebaseDatabase = require('./firebaseDatabase')
 
 const { API_LINE, TOKEN_LINE } = process.env
 
+
 const messageByUseCase = async (message) => {
   const text = message.toLowerCase()
 
@@ -36,7 +37,8 @@ const messageByUseCase = async (message) => {
   }
 }
 
-const lineMessageReply = (replyToken, message) => {
+const lineMessageReply = async (replyToken, message) => {
+  const replyMessage = await messageByUseCase(message)
 
   return axios({ // axios is Promise
     method: 'POST',
@@ -47,7 +49,7 @@ const lineMessageReply = (replyToken, message) => {
     },
     data: {
       replyToken,
-      messages: [messageByUseCase(message)]
+      messages: [replyMessage]
     }
   })
 }
