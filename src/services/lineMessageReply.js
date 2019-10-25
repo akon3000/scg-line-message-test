@@ -2,7 +2,7 @@ const axios = require('axios')
 
 const { API_LINE, TOKEN_LINE } = process.env
 
-const lineMessageReply = async (replyToken, messages) => axios({ // axios is Promise
+const lineMessageReply = (replyToken, messages) => axios({ // axios is Promise
   method: 'POST',
   baseURL: API_LINE,
   url: '/v2/bot/message/reply',

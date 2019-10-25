@@ -20,6 +20,12 @@ const lineBotMessage = async message => {
       }
     }
 
+    case messageType.BLESSING: {
+      messages.push({ type: 'text', text: 'โชคดีในการสัมภาษณ์งานนะครับ' })
+      messages.push({ type: 'sticker', packageId: '11537', stickerId: '52002735' })
+      return messages
+    }
+
     default: return messages
   }
 }
