@@ -24,7 +24,7 @@ const lineBotMessage = async message => {
   }
 }
 
-module.exports = (req, res, next) => {
+module.exports = async (req, res, next) => {
   const { events } = req.body
 
   if (!events || events.length === 0) {
