@@ -8,6 +8,7 @@ require('dotenv').config()
 
 const app = require('express')()
 const bodyParser = require('body-parser')
+const firebaseDatabase = require('./services/firebaseDatabase')
 const lineMessageReply = require('./services/lineMessageReply')
 
 const { PORT } = process.env
@@ -24,19 +25,23 @@ app.get('/', (req, res) => {
 app.post('/webhook', async (req, res) => {
   const { replyToken, message } = req.body.events[0]
 
-  console.log(`Message token: ${replyToken}`)
-  console.log(`Message from chat: ${message.text}`)
+  console.log(`Message token: ${replyToken}`) // For log on clound server
+  console.log(`Message from chat: ${message.text}`) // For log on clound server
 
   try {
+
+    // respone => https://developers.line.biz/en/reference/messaging-api/#response
+
     const { data: response } = await lineMessageReply(replyToken, message.text)
 
-    console.log(`Reply message result : ${response}`)
+    console.log(`Reply message result:`, response) // For log on clound server
 
     return res.json({ status: 200, message: 'Sent message!' })
-    
-  } catch (err) {
 
-    console.log(`Message error: ${ err.response.data.message}`)
+  } catch (err) {
+    // see more if you got error from line => https://developers.line.biz/en/reference/messaging-api/#error-responses
+
+    console.log(`Message error: ${err.response.data.message}`) // For log on clound server
 
     return res.json({ status: err.response.status, message: err.response.data.message })
   }
