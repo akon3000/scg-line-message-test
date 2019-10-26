@@ -33,3 +33,7 @@ npm run start
 
 **Line API Message** allow webhook URL only SSL. I use **Heroku** 3rd for runing this API.
 see my API => [https://scg-line-message-test.herokuapp.com/](https://scg-line-message-test.herokuapp.com/)
+
+---
+
+This project use Firebase Realtime Database, it mean **serviceAccountKey.json** should generate from Firebase admin console.
