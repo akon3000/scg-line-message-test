@@ -21,10 +21,16 @@ Go to scg-line-message-test directory by terminal.
 cd scg-line-message-test
 ```
 
+Install node module package
+
+```
+npm install or yarn
+```
+
 Run this project by command
 
 ```
-npm run start
+npm run start or yarn start
 ```
 
 ---
